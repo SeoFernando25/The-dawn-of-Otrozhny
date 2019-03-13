@@ -1,0 +1,9 @@
+Create options menu for level editor
+Create save/load menu for level editor (for now it just generates a random name for the map)
+Create a "you win screen"
+Find a better to organize and deliver music to channels 
+Simplify serialization and loading
+Find a way to cache audio (not music, but enemy audio)
+Fix a bug where the enemy can sometimes see through walls
+Allow player to pause game without exiting (a pauseLoop function?)
+
