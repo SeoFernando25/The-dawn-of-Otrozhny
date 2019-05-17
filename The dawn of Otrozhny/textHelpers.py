@@ -24,16 +24,16 @@ def truncline(text, maxwidth, font):
     return real, done, stext
 
 
-def wrapline(text, pixelMaxwidth, size):
+def wrapline(text, pixel_max_width, size):
     done = 0
     wrapped = []
-    for f, f_size in textDraw.font_cache:
-        if f_size == size:
-            font = f
+    if size in textDraw.font_cache:
+            font = textDraw.font_cache[size]
+
     else:
         font = pygame.font.Font(textDraw.FONT_PATH, size)
     while not done:
-        nl, done, stext = truncline(text, pixelMaxwidth, font)
+        nl, done, stext = truncline(text, pixel_max_width, font)
         wrapped.append(stext.strip())
         text = text[nl:]
     return wrapped

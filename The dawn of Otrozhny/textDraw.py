@@ -6,10 +6,10 @@ import os
 
 DEFAULT_FONT_SIZE = 8
 
-font_cache = []
+font_cache = {}
 dir_path = os.path.dirname(os.path.realpath(__file__))
 FONT_NAME = "ff.ttf"
-FONT_PATH = dir_path + "\\" + FONT_NAME
+FONT_PATH = os.path.join(dir_path, FONT_NAME)
 
 
 def text_object(text, font, color=colors.WHITE):
@@ -19,8 +19,8 @@ def text_object(text, font, color=colors.WHITE):
 
 def message_display_L(screen, text, x, y, size=DEFAULT_FONT_SIZE,
                       color=colors.WHITE):
-    for f, f_size in font_cache:
-        if f_size == size:
+    if size in font_cache:
+            f = font_cache[size]
             text_surf, text_rect = text_object(text, f, color)
             text_rect.topleft = (x, y)
             return screen.blit(text_surf, text_rect)
@@ -28,13 +28,13 @@ def message_display_L(screen, text, x, y, size=DEFAULT_FONT_SIZE,
     font = pygame.font.Font(FONT_PATH, size)
     text_surf, text_rect = text_object(text, font, color)
     text_rect.topleft = (x, y)
-    font_cache.append ( (font, size) )
+    font_cache[size] = font
     return screen.blit(text_surf, text_rect)
 
 def message_display_R(screen, text, x, y, size=DEFAULT_FONT_SIZE,
                       color=colors.WHITE):
-    for f, f_size in font_cache:
-        if f_size == size:
+    if size in font_cache:
+            f = font_cache[size]
             text_surf, text_rect = text_object(text, f, color)
             text_rect.topleft = (x, y)
             return screen.blit(text_surf, text_rect)
@@ -42,15 +42,15 @@ def message_display_R(screen, text, x, y, size=DEFAULT_FONT_SIZE,
     font = pygame.font.Font(FONT_PATH, size)
     text_surf, text_rect = text_object(text, font, color)
     text_rect.topright = (x, y)
-    font_cache.append ( (font, size) )
+    font_cache[size] = font
     return screen.blit(text_surf, text_rect)
 
 
 
 def message_display_MB(screen, text, x, y, size=DEFAULT_FONT_SIZE,
                        color=colors.WHITE):
-    for f, f_size in font_cache:
-        if f_size == size:
+    if size in font_cache:
+            f = font_cache[size]
             text_surf, text_rect = text_object(text, f, color)
             text_rect.midbottom = (x, y)
             return screen.blit(text_surf, text_rect)
@@ -58,13 +58,13 @@ def message_display_MB(screen, text, x, y, size=DEFAULT_FONT_SIZE,
     font = pygame.font.Font(FONT_PATH, size)
     text_surf, text_rect = text_object(text, font, color)
     text_rect.midbottom = (x, y)
-    font_cache.append ( (font, size) )
+    font_cache[size] = font
     return screen.blit(text_surf, text_rect)
 
 
 def message_display_MT(screen, text, x, y, size, color=colors.WHITE):
-    for f, f_size in font_cache:
-        if f_size == size:
+    if size in font_cache:
+            f = font_cache[size]
             text_surf, text_rect = text_object(text, f, color)
             text_rect.midtop = (x, y)
             return screen.blit(text_surf, text_rect)
@@ -72,13 +72,13 @@ def message_display_MT(screen, text, x, y, size, color=colors.WHITE):
     font = pygame.font.Font(FONT_PATH, size)
     text_surf, text_rect = text_object(text, font, color)
     text_rect.midtop = (x, y)
-    font_cache.append ( (font, size) )
+    font_cache[size] = font
     return screen.blit(text_surf, text_rect)
 
 
 def message_display(screen, text, x, y, size, color=colors.WHITE):
-    for f, f_size in font_cache:
-        if f_size == size:
+    if size in font_cache:
+            f = font_cache[size]
             text_surf, text_rect = text_object(text, f, color)
             text_rect.center = (x, y)
             return screen.blit(text_surf, text_rect)
@@ -86,7 +86,7 @@ def message_display(screen, text, x, y, size, color=colors.WHITE):
     font = pygame.font.Font(FONT_PATH, size)
     text_surf, text_rect = text_object(text, font, color)
     text_rect.center = (x, y)
-    font_cache.append ( (font, size) )
+    font_cache[size] = font
     return screen.blit(text_surf, text_rect)
 
 def truncline(text, maxwidth, font):

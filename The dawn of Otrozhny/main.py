@@ -5,6 +5,12 @@
 # the program
 # :D
 
+
+import pyximport
+print("Tring to recompile (if necessary)")
+pyximport.install()
+
+import cy_renderer
 import pygame
 import colors
 import entities
@@ -66,7 +72,7 @@ def tutorialLoop():
             renderer.HUD_CELL_TITLE_FONT_SIZE)
 
         pygame.display.update()
-        clock.tick(60)
+        clock.tick()
 
 
 def aboutLoop():
@@ -136,7 +142,7 @@ def aboutLoop():
             renderer.HUD_CELL_TITLE_FONT_SIZE)
 
         pygame.display.update()
-        clock.tick(60)
+        clock.tick()
 
 
 def menuLoop():
@@ -247,7 +253,7 @@ def setupGame():
             renderer.HUD_CELL_TITLE_FONT_SIZE)
         
         pygame.display.update()
-        clock.tick(60)
+        clock.tick()
 
 
 
@@ -306,10 +312,11 @@ def postGameLoop(won, time=0):
             textDraw.message_display_MT(renderer.SCREEN, "{}.{}.{}".format(time.seconds//60, time.seconds%60, round(time.microseconds/1000) ), renderer.SCREEN_WIDTH//2, 150, 30)
 
         pygame.display.update()
-        clock.tick(60)
+        clock.tick()
 
 
 def gameLoop():
+    import cy_renderer
     import datetime
     quit_intent = False
     hud = ui.HudScreen(interactable=False)
@@ -352,16 +359,15 @@ def gameLoop():
 
 
         # Think
-        for e in levelData.Level.currentMap.grid_entities:
-            e.update(deltaTime, events)
+        [e.update(deltaTime, events) for e in levelData.Level.currentMap.grid_entities]
         
         # region Rendering
         renderer.SCREEN.fill(colors.BLACK)
         
         # region 3D View Rendering
 
-        viewPort = renderer.render_first_person_canvas(entities.Player.instance)
-        renderer.SCREEN.blit(viewPort, (renderer.VIEWPORT_X_OFFSET,
+        view_port = renderer.render_first_person_canvas(entities.Player.instance)
+        renderer.SCREEN.blit(view_port, (renderer.VIEWPORT_X_OFFSET,
                                         renderer.VIEWPORT_Y_OFFSET))
 
         # endregion
@@ -375,7 +381,7 @@ def gameLoop():
         hud.set_button_text(1, "{} of {}".format(levelData.Level.currentMap.num_of_collected , levelData.Level.currentMap.num_of_collectibles)   )
         hud.set_button_text(0, int(entities.Player.instance.health))
         
-        renderer.render_map(hud.hud_buttons[-1], entities.Player.instance)
+        cy_renderer.render_map(hud.hud_buttons[-1], entities.Player.instance)
         
         hud.draw()
       
@@ -466,19 +472,22 @@ if __name__ == "__main__":
         print("\nAfter updating your version please delete the __pycache__ folder")
         input()
 
+    
 
     clock = pygame.time.Clock()
     if len(sys.argv) > 1 and sys.argv[-1] == "PLOG": #Performance log
+        
         import cProfile, pstats, io
-        from pstats import SortKey
+        #from pstats import SortKey
+        print("Profiling...")
         pr = cProfile.Profile()
         pr.enable()
         mainLoop()
         pygame.quit()
         pr.disable()
         s = io.StringIO()
-        sortby = SortKey.CUMULATIVE
-        ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
+        #sortby = SortKey.TIME
+        ps = pstats.Stats(pr, stream=s).sort_stats('cumtime')
         ps.print_stats()
         fileStream = open("profile_stats.log","w") 
         fileStream.write(s.getvalue())

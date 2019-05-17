@@ -384,6 +384,7 @@ class Monster(Enemy):
         self.channel = None
     def update(self, dt, events):
         import os
+
         super().update(dt, events)
         if self.channel == None:
             self.channel = pygame.mixer.find_channel(True)
