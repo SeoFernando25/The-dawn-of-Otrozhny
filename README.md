@@ -7,4 +7,3 @@ A game made in python for my high school culminating activity
 - Python 3.6
 - pygame
 - numpy
-- pyximport (cython)

@@ -1,11 +1,11 @@
 import math
 import levelData
-import numpy as np
 import colors, entities
 import pygame
 import enum
 import renderer
 import mathHelpers
+
 
 class WallDirection(enum.Enum):
     NORTH = 0
@@ -18,22 +18,22 @@ def generate_distance_table(entity):
     # Calculate Walls
     entity.rayDistanceTable = {}
     entity.entitiesInSight = []
-    
-    cdef int w = 0
-    cdef float ray_dir_x = 0
-    cdef float ray_dir_y = 0
-    cdef int steps
-    cdef int fov_depth = entity.FOVDepth
-    cdef int degrees = math.ceil(math.degrees(entity.FOV))
-    cdef float entity_dir_x = entity.dirX
-    cdef float enity_dir_y = entity.dirY
-    
-    cdef float entity_plane_x = entity.planeX
-    cdef float enity_plane_y =entity.planeY
-    cdef float cam_x = 0
 
-    cdef float entity_px = entity.px
-    cdef float entity_py = entity.py
+    w = 0
+    ray_dir_x = 0
+    ray_dir_y = 0
+
+    fov_depth = entity.FOVDepth
+    degrees = math.ceil(math.degrees(entity.FOV))
+    entity_dir_x = entity.dirX
+    enity_dir_y = entity.dirY
+
+    entity_plane_x = entity.planeX
+    enity_plane_y = entity.planeY
+    cam_x = 0
+
+    entity_px = entity.px
+    entity_py = entity.py
 
     for w in range(degrees):
         cam_x = ((2 * w) / math.ceil(math.degrees(entity.FOV))) - 1
@@ -48,7 +48,7 @@ def generate_distance_table(entity):
             ray_dir_y = 0.1
         if ray_dir_x == 0:
             ray_dir_x = 0.1
-        
+
         ray_angle = math.atan2(ray_dir_x, ray_dir_y)
 
         map_x = int(entity_px)
@@ -94,16 +94,15 @@ def generate_distance_table(entity):
             point_x = map_x
             point_y = map_y
 
-            if (point_x < 0 or
-                point_x >= levelData.Level.currentMap.level_width or
-                point_y < 0 or
-                point_y >= levelData.Level.currentMap.level_height or
-                    steps >= fov_depth):
+            if (point_x < 0
+                    or point_x >= levelData.Level.currentMap.level_width
+                    or point_y < 0
+                    or point_y >= levelData.Level.currentMap.level_height
+                    or steps >= fov_depth):
 
                 entity.rayDistanceTable[ray_angle] = None
             else:
-                if levelData.Level.currentMap.grid[int(point_x)][
-                        int(point_y)]:
+                if levelData.Level.currentMap.grid[int(point_x)][int(point_y)]:
                     hit_wall = True
                     wall_col = levelData.Level.currentMap.grid[int(point_x)][
                         int(point_y)]
@@ -123,39 +122,37 @@ def generate_distance_table(entity):
                     else:
                         wall_dir = WallDirection.NORTH
 
-                    entity.rayDistanceTable[ray_angle] = (
-                        wallDistance, ray_dir_x, ray_dir_y, ray_angle, wall_col, wall_dir)
+                    entity.rayDistanceTable[ray_angle] = (wallDistance,
+                                                          ray_dir_x, ray_dir_y,
+                                                          ray_angle, wall_col,
+                                                          wall_dir)
 
     _calculate_entities_in_sight(entity)
 
 
+def _calculate_entities_in_sight(entity):
 
-
-cdef _calculate_entities_in_sight(entity):
-    import renderer
-
-    w = 0
     fov_polygons = calculate_fov_polygon(entity)
     for e in levelData.Level.currentMap.grid_entities:
         if e != entity:
-            collided = polygonPointCollision(
-                fov_polygons, e.get_pos())
+            collided = polygonPointCollision(fov_polygons, e.get_pos())
             if collided:
                 ent_list = ((entity.px - e.px) * (entity.px - e.px) +
-                           (entity.py - e.py) * (entity.py - e.py))
+                            (entity.py - e.py) * (entity.py - e.py))
                 entity.entitiesInSight.append((e, ent_list))
 
-cdef polygonPointCollision(vertices, p):
+
+def polygonPointCollision(vertices, p):
     # I used the even odd rule for polygon collision
     # see: https://en.wikipedia.org/wiki/Even%E2%80%93odd_rule
     collision = False
-    cdef int nextP = 0
-    cdef double vc[2] 
-    cdef double vn[2]
-    cdef double point[2] 
+    nextP = 0
+    vc = [0, 0]
+    vn = [0, 0]
+    point = [0, 0]
     point[0] = p[0]
     point[1] = p[1]
-    cdef int vert_len = len(vertices)
+    vert_len = len(vertices)
 
     for current in range(vert_len):
         nextP += 1
@@ -163,27 +160,28 @@ cdef polygonPointCollision(vertices, p):
         if (nextP == vert_len):
             nextP = 0
 
-    
         vc = list(vertices[current])
         vn = list(vertices[nextP])
 
-       
-        if (((vc[1] > point[1] and vn[1] < point[1]) or (vc[1] < point[1] and vn[1] > point[1])) and
-            (point[0] < (vn[0]-vc[0])*(point[1]-vc[1]) / (vn[1]-vc[1])+vc[0])):
-                collision = not collision
+        if (((vc[1] > point[1] and vn[1] < point[1]) or
+             (vc[1] < point[1] and vn[1] > point[1]))
+                and (point[0] < (vn[0] - vc[0]) * (point[1] - vc[1]) /
+                     (vn[1] - vc[1]) + vc[0])):
+            collision = not collision
     return collision
 
 
 def calculate_fov_polygon(entity):
-    cdef float px = entity.px
-    cdef float py = entity.py
-    cdef int w = 0
+    px = entity.px
+    py = entity.py
+    w = 0
     entityFovPoints = [(px, py)]
 
     for ray in entity.rayDistanceTable.items():
         if ray[1] == None:
             continue
-        table_step, tableDirX, tableDirY, tableAng, table_type, table_wallDir = ray[1]
+        table_step, tableDirX, tableDirY, tableAng, table_type, table_wallDir = ray[
+            1]
         pointX = px + tableDirX * table_step
         pointY = py + tableDirY * table_step
         entityFovPoints.append((pointX, pointY))
@@ -195,7 +193,7 @@ def calculate_fov_polygon(entity):
 
 
 def _calculate_fov_points(scale_x, scale_y):
-    
+
     all_fovs = []
     for enemy in levelData.Level.currentMap.grid_entities:
         if issubclass(type(enemy), entities.Enemy):
@@ -207,6 +205,7 @@ def _calculate_fov_points(scale_x, scale_y):
                 color = colors.RED
             all_fovs.append((color, enemy_fov))
     return all_fovs
+
 
 def translate_to_map(coordList, scaleX, scaleY):
     newCoordList = []
@@ -222,9 +221,9 @@ def render_map(screen, entity):
     # written as draw(y * scaleX, x * scaleY)
     # screen.fill(colors.GRAY)
     # Get the grid Scale
-    scale_x = screen.get_width()/levelData.Level.currentMap.level_width
-    scale_y = screen.get_height()/levelData.Level.currentMap.level_height
-    
+    scale_x = screen.get_width() / levelData.Level.currentMap.level_width
+    scale_y = screen.get_height() / levelData.Level.currentMap.level_height
+
     # region Calculate MiniMap Shadows
     # Calculate Player FOV points
     fov_points = calculate_fov_polygon(entity)
@@ -236,15 +235,14 @@ def render_map(screen, entity):
     # endregion
 
     # region Draw MiniMap
-    [pygame.draw.rect(screen,
-                      colors.GRAY_VARIATION_3 if levelData.Level.currentMap.grid[
-                          x][y] != 0 else colors.DARK_GRAY,
-                      [scale_x * y,
-                       scale_y * x,
-                       scale_x + 1,
-                       scale_y + 1])
-     for x in range(levelData.Level.currentMap.level_width)
-     for y in range(levelData.Level.currentMap.level_height)]
+    [
+        pygame.draw.rect(
+            screen, colors.GRAY_VARIATION_3 if
+            levelData.Level.currentMap.grid[x][y] != 0 else colors.DARK_GRAY,
+            [scale_x * y, scale_y * x, scale_x + 1, scale_y + 1])
+        for x in range(levelData.Level.currentMap.level_width)
+        for y in range(levelData.Level.currentMap.level_height)
+    ]
 
     # Draw Player FOV
     if len(fov_points) > 2:
@@ -256,31 +254,27 @@ def render_map(screen, entity):
 
     for enemy in levelData.Level.currentMap.grid_entities:
         px = int(enemy.px * scale_y)
-        py = int(
-            enemy.py * scale_x)
+        py = int(enemy.py * scale_x)
         if issubclass(type(enemy), entities.Enemy):
             pygame.draw.circle(screen, colors.RED, [py, px], 2)
         if issubclass(type(enemy), entities.Collectible) and enemy.collected:
             pygame.draw.circle(screen, colors.YELLOW_WHITE, [py, px], 2)
 
-    pygame.draw.circle(screen, colors.WHITE, [int(
-        entity.py * scale_x), int(entity.px * scale_y)], 2)
+    pygame.draw.circle(screen, colors.WHITE,
+                       [int(entity.py * scale_x),
+                        int(entity.px * scale_y)], 2)
 
     # Draw Map
-
-
 
     [pygame.draw.polygon(screen, c, points) for c, points in all_fovs]
 
     color = colors.DARK_GRAY
     for e in levelData.Level.currentMap.grid_entities:
         if issubclass(type(e), entities.Gate) and not e.open:
-            pygame.draw.rect(screen,
-                             color,
-                             [scale_x * math.floor(e.py),
-                              scale_y * math.floor(e.px),
-                              scale_x + 1,
-                              scale_y + 1])
+            pygame.draw.rect(screen, color, [
+                scale_x * math.floor(e.py), scale_y * math.floor(e.px),
+                scale_x + 1, scale_y + 1
+            ])
 
 
 def _get_wall_color(table_side):
@@ -307,7 +301,8 @@ def render_walls(screen, entity):
         if ray[1] == None:
             w += 1
             continue
-        table_step, table_dirx, table_dir_y, table_angle, table_type, table_side = ray[1]
+        table_step, table_dirx, table_dir_y, table_angle, table_type, table_side = ray[
+            1]
         wall_projection_distance = table_step
         line_height = abs(screen.get_height() / wall_projection_distance)
         ceiling = -line_height + (screen.get_height() / 2) + entity.angleY
@@ -315,8 +310,8 @@ def render_walls(screen, entity):
 
         wall_color = _get_wall_color(table_side)
 
-        obj_to_draw[(abs(wall_projection_distance), w)] = (
-            w, ceiling, floor, wall_color)
+        obj_to_draw[(abs(wall_projection_distance), w)] = (w, ceiling, floor,
+                                                           wall_color)
         w += renderer.RAY_ANGLE_STEP
 
     entity.entitiesInSight.sort(key=lambda x: x[1])
@@ -334,15 +329,16 @@ def render_walls(screen, entity):
             new_y = inverse_projection_dist * \
                 (-entity.planeY * dx + entity.planeX * dy)
 
-            new_pos_x = (entity.FOV/2) * (1 + new_x/new_y)
+            new_pos_x = (entity.FOV / 2) * (1 + new_x / new_y)
 
             line_height = abs(screen.get_height() / new_y)
             middle = screen.get_height() / 2
 
             ceiling = -line_height + middle + entity.angleY
             floor = line_height + middle + entity.angleY
-            obj_to_draw[(abs(new_y)-2, math.degrees(new_pos_x))
-                        ] = (math.degrees(new_pos_x), ceiling, floor, enemy)
+            obj_to_draw[(abs(new_y) - 2,
+                         math.degrees(new_pos_x))] = (math.degrees(new_pos_x),
+                                                      ceiling, floor, enemy)
 
     # Sort Obj To Draw To allow a "z-ish" buffer
     sorted_objs = list(obj_to_draw.items())
@@ -356,18 +352,26 @@ def render_walls(screen, entity):
         ceiling = int(ceiling)
         floor = int(floor)
         if isinstance(data, list):
-            pygame.draw.line(screen, data, [int(scaled_width), int(ceiling)], [
-                int(scaled_width), int(floor)], math.ceil(thickness))
+            pygame.draw.line(
+                screen, data,
+                [int(scaled_width), int(ceiling)],
+                [int(scaled_width), int(floor)], math.ceil(thickness))
         if isinstance(data, entities.SpriteEntity):
-            scale_multiplier = abs(mathHelpers.translate(
-                floor-ceiling, 0, renderer.VIEWPORT_HEIGHT, 0, 4))
+            scale_multiplier = abs(
+                mathHelpers.translate(floor - ceiling, 0,
+                                      renderer.VIEWPORT_HEIGHT, 0, 4))
             sprite = data.get_sprite(entity)
             if sprite is not None:
                 scaled_sprite = pygame.transform.scale(
-                    sprite, ((50*sprite.get_height())//sprite.get_width(), 50))
+                    sprite,
+                    ((50 * sprite.get_height()) // sprite.get_width(), 50))
 
-                img = pygame.transform.scale(scaled_sprite,
-                                             (int(scaled_sprite.get_width() * scale_multiplier),  int(scaled_sprite.get_height() * scale_multiplier)))
+                img = pygame.transform.scale(
+                    scaled_sprite,
+                    (int(scaled_sprite.get_width() * scale_multiplier),
+                     int(scaled_sprite.get_height() * scale_multiplier)))
 
-                screen.blit(
-                    img, [int(scaled_width - int(img.get_width()/1.5)), int(floor - img.get_rect().height)])
+                screen.blit(img, [
+                    int(scaled_width - int(img.get_width() / 1.5)),
+                    int(floor - img.get_rect().height)
+                ])
