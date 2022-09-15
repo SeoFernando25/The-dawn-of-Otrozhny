@@ -1,16 +1,17 @@
-# Just placed some draw functions here because 
+# Just placed some draw functions here because
 # otherwise it would become messy
 import textDraw
 import renderer
 import colors
 import entities
 
+
 def render_tutorial_tab_1():
     textDraw.message_display_MB(
-                renderer.SCREEN,
-                "Enemy Status",
-                renderer.SCREEN_WIDTH//1.5, renderer.VIEWPORT_Y_OFFSET * 1.5,
-                20, color=colors.RED)
+        renderer.SCREEN,
+        "Enemy Status",
+        renderer.SCREEN_WIDTH//1.5, renderer.VIEWPORT_Y_OFFSET * 1.5,
+        20, color=colors.RED)
 
     row = 0
     textDraw.message_display_L(
@@ -58,9 +59,9 @@ def render_tutorial_tab_1():
         "This is the state in which the player has",
         renderer.VIEWPORT_X_OFFSET * 10, renderer.VIEWPORT_Y_OFFSET * 2 + 20 * row,
         12)
-    
+
     row += 1
-    
+
     textDraw.message_display_L(
         renderer.SCREEN,
         "been discovered by enemy soldiers. ",
@@ -103,7 +104,6 @@ def render_tutorial_tab_1():
         renderer.VIEWPORT_X_OFFSET, renderer.VIEWPORT_Y_OFFSET * 2 + 20 * row,
         12, entities.EnemyStatus.Caution.value[1])
 
-
     textDraw.message_display_L(
         renderer.SCREEN,
         "Enemy soldiers will search the vicinity",
@@ -121,10 +121,10 @@ def render_tutorial_tab_1():
 
 def render_tutorial_tab_2():
     textDraw.message_display_MB(
-                renderer.SCREEN,
-                "Map Editor",
-                renderer.SCREEN_WIDTH//1.5, renderer.VIEWPORT_Y_OFFSET * 1.5,
-                20, color=colors.RED)
+        renderer.SCREEN,
+        "Map Editor",
+        renderer.SCREEN_WIDTH//1.5, renderer.VIEWPORT_Y_OFFSET * 1.5,
+        20, color=colors.RED)
 
     row = 0
     textDraw.message_display_L(
@@ -139,7 +139,6 @@ def render_tutorial_tab_2():
         renderer.VIEWPORT_X_OFFSET, renderer.VIEWPORT_Y_OFFSET * 2 + 20 * row,
         12)
     row += 2
-
 
     textDraw.message_display_L(
         renderer.SCREEN,
@@ -174,9 +173,9 @@ def render_tutorial_tab_2():
         "In draw mode you can add and remove",
         renderer.VIEWPORT_X_OFFSET * 10, renderer.VIEWPORT_Y_OFFSET * 2 + 20 * row,
         12)
-    
+
     row += 1
-    
+
     textDraw.message_display_L(
         renderer.SCREEN,
         "walls, as well as enemies and nodes",
@@ -205,7 +204,6 @@ def render_tutorial_tab_2():
         renderer.VIEWPORT_X_OFFSET, renderer.VIEWPORT_Y_OFFSET * 2 + 20 * row,
         12, colors.YELLOW)
 
-
     textDraw.message_display_L(
         renderer.SCREEN,
         "You can edit the settings of your map ",
@@ -220,12 +218,13 @@ def render_tutorial_tab_2():
         renderer.VIEWPORT_X_OFFSET * 10, renderer.VIEWPORT_Y_OFFSET * 2 + 20 * row,
         12)
 
+
 def render_tutorial_tab_3():
     textDraw.message_display_MB(
-                renderer.SCREEN,
-                "Items and Objects",
-                renderer.SCREEN_WIDTH//1.5, renderer.VIEWPORT_Y_OFFSET * 1.5,
-                20, color=colors.RED)
+        renderer.SCREEN,
+        "Items and Objects",
+        renderer.SCREEN_WIDTH//1.5, renderer.VIEWPORT_Y_OFFSET * 1.5,
+        20, color=colors.RED)
 
     row = 0
     textDraw.message_display_L(
@@ -240,7 +239,6 @@ def render_tutorial_tab_3():
         renderer.VIEWPORT_X_OFFSET, renderer.VIEWPORT_Y_OFFSET * 2 + 20 * row,
         12)
     row += 2
-
 
     textDraw.message_display_L(
         renderer.SCREEN,
@@ -275,9 +273,9 @@ def render_tutorial_tab_3():
         "Gates block your path and may restrict",
         renderer.VIEWPORT_X_OFFSET * 10, renderer.VIEWPORT_Y_OFFSET * 2 + 20 * row,
         12)
-    
+
     row += 1
-    
+
     textDraw.message_display_L(
         renderer.SCREEN,
         "your way to an advantage point",
@@ -314,12 +312,13 @@ def render_tutorial_tab_3():
         renderer.VIEWPORT_X_OFFSET * 10, renderer.VIEWPORT_Y_OFFSET * 2 + 20 * row,
         12)
 
+
 def render_tutorial_tab_4():
     textDraw.message_display_MB(
-                renderer.SCREEN,
-                "Briefing",
-                renderer.SCREEN_WIDTH//1.5, renderer.VIEWPORT_Y_OFFSET * 1.5,
-                20, color=colors.RED)
+        renderer.SCREEN,
+        "Briefing",
+        renderer.SCREEN_WIDTH//1.5, renderer.VIEWPORT_Y_OFFSET * 1.5,
+        20, color=colors.RED)
 
     row = 0
     textDraw.message_display_L(
@@ -400,12 +399,13 @@ def render_tutorial_tab_4():
         renderer.VIEWPORT_X_OFFSET, renderer.VIEWPORT_Y_OFFSET * 2 + 20 * row,
         12)
 
+
 def render_tutorial_tab_5():
     textDraw.message_display_MB(
-                renderer.SCREEN,
-                "Unauthorized",
-                renderer.SCREEN_WIDTH//1.5, renderer.VIEWPORT_Y_OFFSET * 1.5,
-                20, color=colors.RED)
+        renderer.SCREEN,
+        "Unauthorized",
+        renderer.SCREEN_WIDTH//1.5, renderer.VIEWPORT_Y_OFFSET * 1.5,
+        20, color=colors.RED)
 
     row = 0
     textDraw.message_display_L(
@@ -449,9 +449,3 @@ def render_tutorial_tab_5():
         "jvtl ihjr shaly.",
         renderer.VIEWPORT_X_OFFSET, renderer.VIEWPORT_Y_OFFSET * 2 + 20 * row,
         12)
-   
-
-
-
- 
-

@@ -8,7 +8,6 @@ import enum
 import renderer
 import colors
 import textDraw
-import math
 import ui
 import gameIO
 from gameState import GameState
@@ -192,7 +191,6 @@ class GridManager():
                     
             else:
                 if self.node_edit_start != None:
-                    position_adjust = (self.current_cell[0] + 0.5, self.current_cell[1] + 0.5) 
                     for node in levelData.Level.currentMap.node_entities:
                         if self.current_cell ==  (int(node.px), int(node.py)) and node != self.node_edit_start:
                             self.node_edit_end = node

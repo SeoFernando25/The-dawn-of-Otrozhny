@@ -4,12 +4,10 @@
 # The most used function is at
 # line 337 render_first_person
 import pygame
-import mathHelpers
 import colors
 import math
 import renderer
 import entities
-import levelData
 import cy_renderer
 
 SCREEN_WIDTH = 640
@@ -42,20 +40,14 @@ HUD_CELL_TITLE_FONT_SIZE = 12
 HUD_CELL_OTHER_FONT_SIZE = 12
 
 
-
-
-
-
-
-
-
 def generate_distance_table(entity):
-    
+
     cy_renderer.generate_distance_table(entity)
-  
+
 
 def _calculate_entities_in_sight(entity):
     cy_renderer._calculate_entities_in_sight(entity)
+
 
 def render_floor(screen, entity):
     if entity.angleY > screen.get_height()/2:
@@ -81,7 +73,7 @@ def render_first_person_canvas(entity):
 
 def render_first_person(screen, entity):
     # Render 3d view
-        # Clear Screen
+    # Clear Screen
     screen.fill(colors.ALMOST_BLACK)
     # Draw Floor/ Ceiling
     renderer.render_floor(screen, entity)
@@ -89,8 +81,6 @@ def render_first_person(screen, entity):
     cy_renderer.render_walls(screen, entity)
     # Draw Weapon
     # todo  <= I won't. Tts a stealth game!
-
-
 
 
 def draw_map_preview(screen, map):

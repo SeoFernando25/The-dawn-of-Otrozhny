@@ -3,20 +3,21 @@ import levelData
 
 import renderer
 import colors
-import math, mathHelpers
+import math
+import mathHelpers
 
-#See: http://www.sfu.ca/~arashr/warren.pdf
-def go_to(start: (float, float), target: (float, float)):
+# See: http://www.sfu.ca/~arashr/warren.pdf
+
+
+def go_to(start, target):
     openSet = []
     closedSet = []
-    result = []
 
     cameFrom = {}
     gScore = {}
     gScore[start] = 0
     fScore = {}
     fScore[start] = get_heuristic(start, target)
-    found = False
     openSet.append(start)
 
     while len(openSet) > 0:
@@ -32,13 +33,11 @@ def go_to(start: (float, float), target: (float, float)):
         else:
             openSet.remove(current)
             closedSet.append(current)
-            
 
             for neighbor in get_neighbors(current, levelData.Level.currentMap.grid):
                 if neighbor in closedSet:
                     continue
 
-                
                 tentative_gScore = gScore[current] + 1
                 if neighbor in openSet:
                     if tentative_gScore < gScore[neighbor]:
@@ -47,12 +46,14 @@ def go_to(start: (float, float), target: (float, float)):
                     gScore[neighbor] = tentative_gScore
                     openSet.append(neighbor)
 
-
                 cameFrom[neighbor] = current
                 gScore[neighbor] = tentative_gScore
-                fScore[neighbor] = gScore[neighbor] + get_heuristic(neighbor, target)
-                
-#Get NSEW neighboors if possible
+                fScore[neighbor] = gScore[neighbor] + \
+                    get_heuristic(neighbor, target)
+
+# Get NSEW neighboors if possible
+
+
 def get_neighbors(coord, grid):
     map_w = len(grid[0])
     map_h = len(grid)
@@ -77,6 +78,7 @@ def get_heuristic(coord, end):
     dy = abs(coord[1] - end[1])
     return dx + dy
 
+
 def reconstruct_path(cameFrom, current):
     result = [current]
     while current in cameFrom.keys():
@@ -93,28 +95,26 @@ if __name__ == "__main__":
 
     SCREEN_SIZE = (SCREEN_WIDTH, SCREEN_HEIGHT)
 
-
     SCREEN = pygame.display.set_mode(SCREEN_SIZE)
     clock = pygame.time.Clock()
     done = False
 
-    start = (2,2)
-    target = (14,14)
+    start = (2, 2)
+    target = (14, 14)
 
     cached_result = go_to(start, target)
 
     temp_result = cached_result.copy()
     temp_result_temp = temp_result.copy()
     w = SCREEN_WIDTH / len(levelData.worldMap[0])
-    h =  SCREEN_HEIGHT / len(levelData.worldMap)
-
+    h = SCREEN_HEIGHT / len(levelData.worldMap)
 
     while not done:
         deltaTime = clock.get_time() / 1000
         fps = clock.get_fps()
         mouse = pygame.mouse.get_pos()
         events = pygame.event.get()
-        kb = pygame.key.get_pressed()        
+        kb = pygame.key.get_pressed()
         for event in events:
             if event.type == pygame.QUIT:
                 done = True
@@ -126,9 +126,9 @@ if __name__ == "__main__":
 
         if len(temp_result) > 0:
             nextStep = temp_result[0]
-            newX = mathHelpers.lerp(start[0], nextStep[0], deltaTime * 10 ) 
+            newX = mathHelpers.lerp(start[0], nextStep[0], deltaTime * 10)
             newY = mathHelpers.lerp(start[1], nextStep[1], deltaTime * 10)
-            if (round( newX), round(newY) ) == nextStep :
+            if (round(newX), round(newY)) == nextStep:
                 temp_result.pop(0)
             start = (newX, newY)
         else:
@@ -137,7 +137,6 @@ if __name__ == "__main__":
 
         SCREEN.fill(colors.WHITE)
 
-        
         for x in range(len(levelData.worldMap[0])):
             for y in range(len(levelData.worldMap)):
 
@@ -148,16 +147,16 @@ if __name__ == "__main__":
                 else:
                     wall_color = colors.BLACK
 
+                pygame.draw.rect(SCREEN, wall_color, [(x*w), (y*h), w-1, h-1])
 
-                pygame.draw.rect(SCREEN, wall_color, [(x*w) , (y*h), w-1, h-1 ] )
-
-        
         for x, y in cached_result:
-            pygame.draw.rect(SCREEN, colors.GREEN, [int(x*w) , int(y*h), w-1, h-1 ] )
+            pygame.draw.rect(SCREEN, colors.GREEN, [
+                             int(x*w), int(y*h), w-1, h-1])
 
-
-        pygame.draw.circle(SCREEN, colors.BLUE, [int(start[0] * w + w/2),int(start[1] * h +h/2) ], 10 )
-        pygame.draw.circle(SCREEN, colors.RED, [int(target[0] * w + (w/2) ),int(target[1] * h +(h/2 )) ], 10 )
+        pygame.draw.circle(SCREEN, colors.BLUE, [int(
+            start[0] * w + w/2), int(start[1] * h + h/2)], 10)
+        pygame.draw.circle(SCREEN, colors.RED, [int(
+            target[0] * w + (w/2)), int(target[1] * h + (h/2))], 10)
 
         pygame.display.update()
         clock.tick(60)
