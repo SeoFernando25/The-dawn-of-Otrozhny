@@ -29,9 +29,12 @@ python main.py
 
 Main Menu
 ![alt](media/menu.png)
+
 Tutorial Tabs
 ![alt](media/brief.png)
+
 Ray-casting engine
 ![alt](media/game.png)
+
 Gameplay
 ![alt](media/game2.png)
